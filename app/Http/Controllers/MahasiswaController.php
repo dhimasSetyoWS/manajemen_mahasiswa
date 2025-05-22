@@ -15,8 +15,8 @@ class MahasiswaController extends Controller
      */
     public function index()
     {
-        $mahasiswa = Mahasiswa::all();
-        return view("index" , compact('mahasiswa'));
+        $mahasiswa = Mahasiswa::paginate(3);
+        return view("index", ['mahasiswa' => $mahasiswa]);
     }
 
     /**
@@ -28,7 +28,7 @@ class MahasiswaController extends Controller
     {
         return view('create');
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -59,7 +59,7 @@ class MahasiswaController extends Controller
     public function show($id)
     {
         $mahasiswa = Mahasiswa::find($id);
-        return view("show" , compact('mahasiswa'));
+        return view("show", compact('mahasiswa'));
     }
 
     /**
@@ -70,7 +70,8 @@ class MahasiswaController extends Controller
      */
     public function edit($id)
     {
-        //
+        $mahasiswa = Mahasiswa::find($id);
+        return view('edit', compact('mahasiswa'));
     }
 
     /**
@@ -82,19 +83,34 @@ class MahasiswaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'nama' => 'required|max:250', // bail itu akan menghentikan seluruh validasi jika atribut yang memiliki validasi bail failure, jadi kalai required failure, maka unique dan max
+            'nim' => 'required|max:10',
+            'email' => 'required|max:100'
+        ]);
+
+        if($validated) {
+            $nameData = Mahasiswa::find($id);
+            $successMessage = "Data " . $nameData['nama'] . " Berhasil di Update";
+            Mahasiswa::find($id)->update($request->all());
+            $request->session()->flash('success', $successMessage);
+            return redirect()->route('mahasiswa.index');
+        }
     }
 
     /**
      * Remove the specified resource from storage.
-     *
+     * 
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        $nameData = Mahasiswa::find($id);
+        $deleteMassage = "Data " . $nameData['nama'] . " berhasil di hapus!";
         $delete = Mahasiswa::destroy($id);
         if ($delete) {
+            $request->session()->flash('delete', $deleteMassage);
             return redirect()->route('mahasiswa.index');
         }
     }
