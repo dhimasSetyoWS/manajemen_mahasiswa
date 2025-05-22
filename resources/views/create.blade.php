@@ -1,5 +1,5 @@
 <x-layout.content title="Create">
-    <form class="max-w-sm mx-auto" method="POST" action="{{ route('mahasiswa.store') }}">
+    <form class="max-w-sm mx-auto mb-3" method="POST" action="{{ route('mahasiswa.store') }}">
         @csrf
         <div class="mb-5 fadeInUp">
             <label for="nama" class="block mb-2 text-sm font-medium text-gray-900">Nama</label>
@@ -21,7 +21,7 @@
             type="submit" value="Tambah">
     </form>
     @if ($errors->any())
-        <div class="bg-amber-700 text-white">
+        <div class="max-w-sm mx-auto bg-red-400 p-4 rounded mb-4 pulse text-white">
             <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
